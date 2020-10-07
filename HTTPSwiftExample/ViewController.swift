@@ -15,7 +15,7 @@
 //    ifconfig |grep inet   
 // to see what your public facing IP address is, the ip address can be used here
 //let SERVER_URL = "http://erics-macbook-pro.local:8000" // change this for your server name!!!
-let SERVER_URL = "http://10.8.116.92:8000" // change this for your server name!!!
+let SERVER_URL = "http://10.0.1.6:8000" // change this for your server name!!!
 
 import UIKit
 import CoreMotion
@@ -23,7 +23,18 @@ import CoreMotion
 class ViewController: UIViewController, URLSessionDelegate {
     
     // MARK: Class Properties
-    var session = URLSession()
+    lazy var session: URLSession = {
+        let sessionConfig = URLSessionConfiguration.ephemeral
+        
+        sessionConfig.timeoutIntervalForRequest = 5.0
+        sessionConfig.timeoutIntervalForResource = 8.0
+        sessionConfig.httpMaximumConnectionsPerHost = 1
+        
+        return URLSession(configuration: sessionConfig,
+            delegate: self,
+            delegateQueue:self.operationQueue)
+    }()
+    
     let operationQueue = OperationQueue()
     let motionOperationQueue = OperationQueue()
     let calibrationOperationQueue = OperationQueue()
@@ -234,26 +245,17 @@ class ViewController: UIViewController, URLSessionDelegate {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        let sessionConfig = URLSessionConfiguration.ephemeral
-        
-        sessionConfig.timeoutIntervalForRequest = 5.0
-        sessionConfig.timeoutIntervalForResource = 8.0
-        sessionConfig.httpMaximumConnectionsPerHost = 1
-        
-        self.session = URLSession(configuration: sessionConfig,
-            delegate: self,
-            delegateQueue:self.operationQueue)
         
         // create reusable animation
-        animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-        animation.type = kCATransitionFade
+        animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+        animation.type = CATransitionType.fade
         animation.duration = 0.5
         
         
         // setup core motion handlers
         startMotionUpdates()
         
-        dsid = 2 // set this and it will update UI
+        dsid = 1 // set this and it will update UI
     }
 
     //MARK: Get New Dataset ID
@@ -345,20 +347,21 @@ class ViewController: UIViewController, URLSessionDelegate {
         request.httpBody = requestBody
         
         let postTask : URLSessionDataTask = self.session.dataTask(with: request,
-                                                                  completionHandler:{(data, response, error) in
-                                                                    if(error != nil){
-                                                                        if let res = response{
-                                                                            print("Response:\n",res)
-                                                                        }
-                                                                    }
-                                                                    else{
-                                                                        let jsonDictionary = self.convertDataToDictionary(with: data)
-                                                                        
-                                                                        let labelResponse = jsonDictionary["prediction"]!
-                                                                        print(labelResponse)
-                                                                        self.displayLabelResponse(labelResponse as! String)
+                                                                  completionHandler:{
+                        (data, response, error) in
+                        if(error != nil){
+                            if let res = response{
+                                print("Response:\n",res)
+                            }
+                        }
+                        else{ // no error we are aware of
+                            let jsonDictionary = self.convertDataToDictionary(with: data)
+                            
+                            let labelResponse = jsonDictionary["prediction"]!
+                            print(labelResponse)
+                            self.displayLabelResponse(labelResponse as! String)
 
-                                                                    }
+                        }
                                                                     
         })
         
@@ -445,7 +448,12 @@ class ViewController: UIViewController, URLSessionDelegate {
             return jsonDictionary
             
         } catch {
-            print("json error: \(error.localizedDescription)")
+            
+            if let strData = String(data:data!, encoding:String.Encoding(rawValue: String.Encoding.utf8.rawValue)){
+                            print("printing JSON received as string: "+strData)
+            }else{
+                print("json error: \(error.localizedDescription)")
+            }
             return NSDictionary() // just return empty
         }
     }
