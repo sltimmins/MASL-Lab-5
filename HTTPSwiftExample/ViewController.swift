@@ -7,14 +7,15 @@
 //
 
 // This exampe is meant to be run with the python example:
-//              tornado_example.py 
+//              tornado_turiexamples.py 
 //              from the course GitHub repository: tornado_bare, branch sklearn_example
 
 
 // if you do not know your local sharing server name try:
-//    ifconfig |grep inet   
+//    ifconfig |grep "inet "
 // to see what your public facing IP address is, the ip address can be used here
-//let SERVER_URL = "http://erics-macbook-pro.local:8000" // change this for your server name!!!
+
+// CHANGE THIS TO THE URL FOR YOUR LAPTOP
 let SERVER_URL = "http://10.0.1.6:8000" // change this for your server name!!!
 
 import UIKit
