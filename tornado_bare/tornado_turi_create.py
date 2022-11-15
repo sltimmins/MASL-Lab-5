@@ -10,7 +10,7 @@
 from pymongo import MongoClient
 from pymongo.errors import ServerSelectionTimeoutError
 
-
+import os
 # tornado imports
 import tornado.web
 from tornado.web import HTTPError
@@ -54,7 +54,8 @@ class Application(tornado.web.Application):
         self.handlers_string = str(handlers)
 
         try:
-            self.client  = MongoClient(serverSelectionTimeoutMS=50) # local host, default port
+            db_host = os.getenv('DB_HOST')
+            self.client  = MongoClient(host=db_host, serverSelectionTimeoutMS=50) # local host, default port
             print(self.client.server_info()) # force pymongo to look for possible running servers, error if none running
             # if we get here, at least one instance of pymongo is running
             self.db = self.client.turidatabase # database with labeledinstances, models

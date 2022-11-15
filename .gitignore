@@ -1,0 +1,4 @@
+
+tornado_bare/docker-compose.yml
+tornado_bare/Dockerfile
+tornado_bare/requirements.txt
