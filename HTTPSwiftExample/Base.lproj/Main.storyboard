@@ -101,6 +101,7 @@
                         <outlet property="dsidLabel" destination="yA7-nd-seT" id="pMu-dh-28l"/>
                         <outlet property="largeMotionMagnitude" destination="hUu-DN-Kwe" id="oWd-Qb-Qtq"/>
                         <outlet property="soundLabel" destination="Ld6-6n-wtH" id="1u7-ps-wqg"/>
+                        <outlet property="startButton" destination="Q83-th-e1u" id="ouF-x4-u0h"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>

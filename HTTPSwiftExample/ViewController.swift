@@ -21,7 +21,7 @@ let SERVER_URL = "http://10.9.171.124:8000/" // change this for your server name
 import UIKit
 import CoreMotion
 
-let AUDIO_BUFFER_SIZE = 1024 * 4;
+let AUDIO_BUFFER_SIZE = 1024 * 4 * 15;
 
 class ViewController: UIViewController, URLSessionDelegate {
     
@@ -54,12 +54,9 @@ class ViewController: UIViewController, URLSessionDelegate {
     var isWaitingForMotionData = false
 //
     @IBOutlet weak var dsidLabel: UILabel!
-//    @IBOutlet weak var upArrow: UILabel!
-//    @IBOutlet weak var rightArrow: UILabel!
-//    @IBOutlet weak var downArrow: UILabel!
-//    @IBOutlet weak var leftArrow: UILabel!
     @IBOutlet weak var largeMotionMagnitude: UIProgressView!
     @IBOutlet weak var soundLabel: UILabel!
+    @IBOutlet weak var startButton: UIButton!
     private var timer:Timer = Timer()
     // MARK: Class Properties with Observers
     enum CalibrationStage {
@@ -70,71 +67,71 @@ class ViewController: UIViewController, URLSessionDelegate {
         case yell
     }
     
-    var calibrationStage:CalibrationStage = .notCalibrating {
-        didSet{
-            switch calibrationStage {
-            case .ambient:
-                self.isCalibrating = true
-                DispatchQueue.main.async{
-                    self.changeLabel("Be Quiet")
-                    self.getAudio(text:"ambient")
-//                    self.setAsCalibrating(self.whisper)
-//                    self.setAsCalibrating(self.upArrow)
-//                    self.setAsNormal(self.rightArrow)
-//                    self.setAsNormal(self.leftArrow)
-//                    self.setAsNormal(self.downArrow)
-                }
-                break
-            case .whisper:
-                self.isCalibrating = true
-                DispatchQueue.main.async{
-                    self.changeLabel("Whisper")
-                    self.getAudio(text:"whisper")
-//                    self.setAsCalibrating(self.talk)
-//                    self.setAsNormal(self.upArrow)
-//                    self.setAsNormal(self.rightArrow)
-//                    self.setAsCalibrating(self.leftArrow)
-//                    self.setAsNormal(self.downArrow)
-                }
-                break
-            case .talk:
-                self.isCalibrating = true
-                DispatchQueue.main.async{
-                    self.changeLabel("Talk Normally")
-                    self.getAudio(text:"talk")
-//                    self.setAsCalibrating(self.yell)
-//                    self.setAsNormal(self.upArrow)
-//                    self.setAsNormal(self.rightArrow)
-//                    self.setAsNormal(self.leftArrow)
-//                    self.setAsCalibrating(self.downArrow)
-                }
-                break
-                
-            case .yell:
-                self.isCalibrating = true
-                DispatchQueue.main.async{
-                    self.changeLabel("Yell")
-                    self.getAudio(text:"yell")
-//                    self.setAsCalibrating(self.notCalibrating)
-//                    self.setAsNormal(self.upArrow)
-//                    self.setAsCalibrating(self.rightArrow)
-//                    self.setAsNormal(self.leftArrow)
-//                    self.setAsNormal(self.downArrow)
-                }
-                break
-            case .notCalibrating:
-                self.isCalibrating = false
-                DispatchQueue.main.async{
-                    self.changeLabel("Listening")
-//                    self.setAsNormal(self.upArrow)
-//                    self.setAsNormal(self.rightArrow)
-//                    self.setAsNormal(self.leftArrow)
-//                    self.setAsNormal(self.downArrow)
-                }
-                break
-            }
-        }
-    }
+    var calibrationStage:CalibrationStage = .notCalibrating
+//        didSet{
+//            switch calibrationStage {
+//            case .ambient:
+//                self.isCalibrating = true
+//                DispatchQueue.main.async{
+//                    self.changeLabel("Be Quiet")
+//                    self.getAudio(text:"ambient")
+////                    self.setAsCalibrating(self.whisper)
+////                    self.setAsCalibrating(self.upArrow)
+////                    self.setAsNormal(self.rightArrow)
+////                    self.setAsNormal(self.leftArrow)
+////                    self.setAsNormal(self.downArrow)
+//                }
+//                break
+//            case .whisper:
+//                self.isCalibrating = true
+//                DispatchQueue.main.async{
+//                    self.changeLabel("Whisper")
+//                    self.getAudio(text:"whisper")
+////                    self.setAsCalibrating(self.talk)
+////                    self.setAsNormal(self.upArrow)
+////                    self.setAsNormal(self.rightArrow)
+////                    self.setAsCalibrating(self.leftArrow)
+////                    self.setAsNormal(self.downArrow)
+//                }
+//                break
+//            case .talk:
+//                self.isCalibrating = true
+//                DispatchQueue.main.async{
+//                    self.changeLabel("Talk Normally")
+//                    self.getAudio(text:"talk")
+////                    self.setAsCalibrating(self.yell)
+////                    self.setAsNormal(self.upArrow)
+////                    self.setAsNormal(self.rightArrow)
+////                    self.setAsNormal(self.leftArrow)
+////                    self.setAsCalibrating(self.downArrow)
+//                }
+//                break
+//
+//            case .yell:
+//                self.isCalibrating = true
+//                DispatchQueue.main.async{
+//                    self.changeLabel("Yell")
+//                    self.getAudio(text:"yell")
+////                    self.setAsCalibrating(self.notCalibrating)
+////                    self.setAsNormal(self.upArrow)
+////                    self.setAsCalibrating(self.rightArrow)
+////                    self.setAsNormal(self.leftArrow)
+////                    self.setAsNormal(self.downArrow)
+//                }
+//                break
+//            case .notCalibrating:
+//                self.isCalibrating = false
+//                DispatchQueue.main.async{
+//                    self.changeLabel("Listening")
+////                    self.setAsNormal(self.upArrow)
+////                    self.setAsNormal(self.rightArrow)
+////                    self.setAsNormal(self.leftArrow)
+////                    self.setAsNormal(self.downArrow)
+//                }
+//                break
+//            }
+//        }
+//    }
     
     var dsid:Int = 0 {
         didSet{
@@ -185,16 +182,15 @@ class ViewController: UIViewController, URLSessionDelegate {
     func getAudio(text:String){
 //        print(self.audio.fftData)
         var sounds = self.audio.fftData
-        for _ in 0...20{
+        for _ in 0...50{
             sounds += self.audio.fftData
-            setDelayedWaitingToTrue(10000)
         }
         
 //        for i in 0...sounds.count{
 //            sounds[i] = Double(sounds[i])
 //        }
         sendFeatures(sounds, withLabel: self.calibrationStage)
-        self.nextCalibrationStage()
+//        self.nextCalibrationStage()
     }
     
     //MARK: Calibration procedure
@@ -226,40 +222,49 @@ class ViewController: UIViewController, URLSessionDelegate {
 //        }
 //    }
     
-    func nextCalibrationStage(){
-        switch self.calibrationStage {
-        case .notCalibrating:
-            //start with up arrow
-            self.calibrationStage = .ambient
-            setDelayedWaitingToTrue(1.0)
-            break
-        case .ambient:
-            //go to right arrow
-            self.calibrationStage = .whisper
-            setDelayedWaitingToTrue(1.0)
-            break
-        case .whisper:
-            //go to down arrow
-            self.calibrationStage = .talk
-            setDelayedWaitingToTrue(1.0)
-            break
-        case .talk:
-            //go to left arrow
-            self.calibrationStage = .yell
-            setDelayedWaitingToTrue(1.0)
-            break
-            
-        case .yell:
-            //end calibration
-            self.calibrationStage = .notCalibrating
-            setDelayedWaitingToTrue(1.0)
-            break
-        }
-    }
+//    func nextCalibrationStage(){
+//            self.startButton.isEnabled = true
+//            switch self.calibrationStage {
+//            case .notCalibrating:
+//                //start with up arrow
+//                self.calibrationStage = .ambient
+//                setDelayedWaitingToTrue(1.0)
+//                break
+//            case .ambient:
+//                //go to right arrow
+//                self.calibrationStage = .whisper
+//                setDelayedWaitingToTrue(1.0)
+//                break
+//            case .whisper:
+//                //go to down arrow
+//                self.calibrationStage = .talk
+//                setDelayedWaitingToTrue(1.0)
+//                break
+//            case .talk:
+//                //go to left arrow
+//                self.calibrationStage = .yell
+//                setDelayedWaitingToTrue(1.0)
+//                break
+//
+//            case .yell:
+//                //end calibration
+//                self.calibrationStage = .notCalibrating
+//                setDelayedWaitingToTrue(1.0)
+//                break
+//            }
+//    }
     
     func setDelayedWaitingToTrue(_ time:Double){
+        self.startButton.isEnabled = false
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + time, execute: {
-            self.isWaitingForMotionData = true
+//            self.audio.pause()
+            print(self.audio.fftData)
+            self.sendFeatures(self.audio.fftData, withLabel: self.calibrationStage)
+            self.startButton.isEnabled = true
+            if(self.calibrationStage == .yell){
+                self.soundLabel.text = "Listening"
+            }
         })
     }
     
@@ -278,16 +283,18 @@ class ViewController: UIViewController, URLSessionDelegate {
     
     // MARK: View Controller Life Cycle
     override func viewDidLoad() {
+        self.startButton.setTitle("Begin Ambient", for: .normal)
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
         audio.startMicrophoneProcessing(withFps: 10)
         audio.play()
-        soundLabel.text = "default"
+        soundLabel.text = ""
         // create reusable animation
         animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
         animation.type = CATransitionType.fade
         animation.duration = 0.5
+        calibrationStage = .notCalibrating
         // setup core motion handlers
 //        startMotionUpdates()
         
@@ -323,8 +330,41 @@ class ViewController: UIViewController, URLSessionDelegate {
     
     //MARK: Calibration
     @IBAction func startCalibration(_ sender: AnyObject) {
-        self.isWaitingForMotionData = false // dont do anything yet
-        nextCalibrationStage()
+//        self.isWaitingForMotionData = false // dont do anything yet
+//        nextCalibrationStage()
+        if(calibrationStage == .notCalibrating){
+            calibrationStage = .ambient
+            soundLabel.text = "Be Quiet"
+//            audio.play()
+            setDelayedWaitingToTrue(3.0)
+            self.startButton.setTitle("Begin Whispering", for: .normal)
+        }
+        else if(calibrationStage == .ambient){
+            calibrationStage = .whisper
+            soundLabel.text = "Whisper"
+//            audio.play()
+            setDelayedWaitingToTrue(3.0)
+            self.startButton.setTitle("Begin Talking", for: .normal)
+        }
+        else if(calibrationStage == .whisper){
+            calibrationStage = .talk
+            soundLabel.text = "Talk"
+//            audio.play()
+            setDelayedWaitingToTrue(3.0)
+            self.startButton.setTitle("Begin Yelling", for: .normal)
+        }
+        else if(calibrationStage == .talk){
+            calibrationStage = .yell
+            soundLabel.text = "Yell"
+//            audio.play()
+            setDelayedWaitingToTrue(3.0)
+            self.startButton.setTitle("Begin Ambient", for: .normal)
+        }
+        else if(calibrationStage == .yell){
+            calibrationStage = .notCalibrating
+            soundLabel.text = "Listening"
+            
+        }
         
     }
     
@@ -374,6 +414,7 @@ class ViewController: UIViewController, URLSessionDelegate {
         var request = URLRequest(url: postUrl!)
         
         // data to send in body of post request (send arguments as json)
+                                                                        //ADD WHICH MODEL RIHGT FUCKING HERE
         let jsonUpload:NSDictionary = ["feature":array, "dsid":self.dsid]
         
         

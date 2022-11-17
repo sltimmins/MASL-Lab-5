@@ -15,6 +15,7 @@ class AudioModel {
     private var BUFFER_SIZE:Int
     var timeData:[Float]
     var fftData:[Float]
+    var isProcessing:Bool
 //    private var maxVals:[Float]
 //    private var maxFreqsi:[Int]
 //    var maxFreqs:[Float]
@@ -30,21 +31,24 @@ class AudioModel {
 //        maxFreqsi = Array.init(repeating: 0, count: 2)
 //        maxFreqs = Array.init(repeating: 0.0, count: 2)
 //        maxes = Array.init(repeating: (0.0, 0), count: 2)
+        isProcessing = false
         print(self.audioManager!.samplingRate)
     }
     
     // public function for starting processing of microphone data
     func startMicrophoneProcessing(withFps:Double){
+        self.isProcessing = true
         self.audioManager?.inputBlock = self.handleMicrophone
 //        print("start:")
 //        print(fftData)
         // repeat this fps times per second using the timer class
-        Timer.scheduledTimer(timeInterval: 1.0/withFps, target: self,
+        Timer.scheduledTimer(timeInterval: 3.0, target: self,
                             selector: #selector(self.runEveryInterval),
                             userInfo: nil,
                             repeats: true)
         
     }
+    
     
     // public function for playing from a file reader file
     func startProcesingAudioFileForPlayback(){
@@ -64,10 +68,12 @@ class AudioModel {
     
     // You must call this when you want the audio to start being handled by our model
     func play(){
+        isProcessing = true
         self.audioManager?.play()
     }
     
     func pause(){
+        isProcessing = false
         self.audioManager?.pause()
     }
     
