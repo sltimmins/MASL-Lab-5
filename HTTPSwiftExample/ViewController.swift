@@ -16,7 +16,7 @@
 // to see what your public facing IP address is, the ip address can be used here
 
 // CHANGE THIS TO THE URL FOR YOUR LAPTOP
-let SERVER_URL = "http://192.168.1.252:8000/" // change this for your server name!!!
+let SERVER_URL = "http://10.9.171.124:8000/" // change this for your server name!!!
 
 import UIKit
 import CoreMotion
@@ -52,70 +52,76 @@ class ViewController: UIViewController, URLSessionDelegate {
     var isCalibrating = false
     
     var isWaitingForMotionData = false
-    
+//
     @IBOutlet weak var dsidLabel: UILabel!
-    @IBOutlet weak var upArrow: UILabel!
-    @IBOutlet weak var rightArrow: UILabel!
-    @IBOutlet weak var downArrow: UILabel!
-    @IBOutlet weak var leftArrow: UILabel!
+//    @IBOutlet weak var upArrow: UILabel!
+//    @IBOutlet weak var rightArrow: UILabel!
+//    @IBOutlet weak var downArrow: UILabel!
+//    @IBOutlet weak var leftArrow: UILabel!
     @IBOutlet weak var largeMotionMagnitude: UIProgressView!
-    
+    @IBOutlet weak var soundLabel: UILabel!
+    private var timer:Timer = Timer()
     // MARK: Class Properties with Observers
     enum CalibrationStage {
         case notCalibrating
-        case up
-        case right
-        case down
-        case left
+        case whisper
+        case talk
+        case ambient
+        case yell
     }
     
     var calibrationStage:CalibrationStage = .notCalibrating {
         didSet{
             switch calibrationStage {
-            case .up:
+            case .ambient:
                 self.isCalibrating = true
                 DispatchQueue.main.async{
-                    self.setAsCalibrating(self.upArrow)
-                    self.setAsNormal(self.rightArrow)
-                    self.setAsNormal(self.leftArrow)
-                    self.setAsNormal(self.downArrow)
+                    self.changeLabel("Be Quiet")
+                    self.getAudio()
+//                    self.setAsCalibrating(self.upArrow)
+//                    self.setAsNormal(self.rightArrow)
+//                    self.setAsNormal(self.leftArrow)
+//                    self.setAsNormal(self.downArrow)
                 }
                 break
-            case .left:
+            case .whisper:
                 self.isCalibrating = true
                 DispatchQueue.main.async{
-                    self.setAsNormal(self.upArrow)
-                    self.setAsNormal(self.rightArrow)
-                    self.setAsCalibrating(self.leftArrow)
-                    self.setAsNormal(self.downArrow)
+                    self.changeLabel("Whisper")
+//                    self.setAsNormal(self.upArrow)
+//                    self.setAsNormal(self.rightArrow)
+//                    self.setAsCalibrating(self.leftArrow)
+//                    self.setAsNormal(self.downArrow)
                 }
                 break
-            case .down:
+            case .talk:
                 self.isCalibrating = true
                 DispatchQueue.main.async{
-                    self.setAsNormal(self.upArrow)
-                    self.setAsNormal(self.rightArrow)
-                    self.setAsNormal(self.leftArrow)
-                    self.setAsCalibrating(self.downArrow)
+                    self.changeLabel("Talk Normally")
+//                    self.setAsNormal(self.upArrow)
+//                    self.setAsNormal(self.rightArrow)
+//                    self.setAsNormal(self.leftArrow)
+//                    self.setAsCalibrating(self.downArrow)
                 }
                 break
                 
-            case .right:
+            case .yell:
                 self.isCalibrating = true
                 DispatchQueue.main.async{
-                    self.setAsNormal(self.upArrow)
-                    self.setAsCalibrating(self.rightArrow)
-                    self.setAsNormal(self.leftArrow)
-                    self.setAsNormal(self.downArrow)
+                    self.changeLabel("Yell")
+//                    self.setAsNormal(self.upArrow)
+//                    self.setAsCalibrating(self.rightArrow)
+//                    self.setAsNormal(self.leftArrow)
+//                    self.setAsNormal(self.downArrow)
                 }
                 break
             case .notCalibrating:
                 self.isCalibrating = false
                 DispatchQueue.main.async{
-                    self.setAsNormal(self.upArrow)
-                    self.setAsNormal(self.rightArrow)
-                    self.setAsNormal(self.leftArrow)
-                    self.setAsNormal(self.downArrow)
+//                    self.setAsNormal(self.upArrow)
+//                    self.setAsNormal(self.rightArrow)
+//                    self.setAsNormal(self.leftArrow)
+//                    self.setAsNormal(self.downArrow)
                 }
                 break
             }
@@ -137,91 +143,95 @@ class ViewController: UIViewController, URLSessionDelegate {
     }
     
     // MARK: Core Motion Updates
-    func startMotionUpdates(){
-        // some internal inconsistency here: we need to ask the device manager for device
-        
-        if self.motion.isDeviceMotionAvailable{
-            self.motion.deviceMotionUpdateInterval = 1.0/200
-            self.motion.startDeviceMotionUpdates(to: motionOperationQueue, withHandler: self.handleMotion )
-        }
-    }
+//    func startMotionUpdates(){
+//        // some internal inconsistency here: we need to ask the device manager for device
+//
+//        if self.motion.isDeviceMotionAvailable{
+//            self.motion.deviceMotionUpdateInterval = 1.0/200
+//            self.motion.startDeviceMotionUpdates(to: motionOperationQueue, withHandler: self.handleMotion )
+//        }
+//    }
     
-    func handleMotion(_ motionData:CMDeviceMotion?, error:Error?){
-        if let accel = motionData?.userAcceleration {
-            self.ringBuffer.addNewData(xData: accel.x, yData: accel.y, zData: accel.z)
-            let mag = fabs(accel.x)+fabs(accel.y)+fabs(accel.z)
-            
-            DispatchQueue.main.async{
-                //show magnitude via indicator
-                self.largeMotionMagnitude.progress = Float(mag)/0.2
-            }
-            
-            if mag > self.magValue {
-                // buffer up a bit more data and then notify of occurrence
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05, execute: {
-                    self.calibrationOperationQueue.addOperation {
-                        // something large enough happened to warrant
-                        self.largeMotionEventOccurred()
-                    }
-                })
-            }
-        }
+//    func handleMotion(_ motionData:CMDeviceMotion?, error:Error?){
+//        if let accel = motionData?.userAcceleration {
+//            self.ringBuffer.addNewData(xData: accel.x, yData: accel.y, zData: accel.z)
+//            let mag = fabs(accel.x)+fabs(accel.y)+fabs(accel.z)
+//
+//            DispatchQueue.main.async{
+//                //show magnitude via indicator
+//                self.largeMotionMagnitude.progress = Float(mag)/0.2
+//            }
+//
+//            if mag > self.magValue {
+//                // buffer up a bit more data and then notify of occurrence
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05, execute: {
+//                    self.calibrationOperationQueue.addOperation {
+//                        // something large enough happened to warrant
+//                        self.largeMotionEventOccurred()
+//                    }
+//                })
+//            }
+//        }
+//    }
+    @objc
+    func getAudio(){
+//        print(self.audio.fftData)
+        print("in getAudio")
     }
-    
     
     //MARK: Calibration procedure
-    func largeMotionEventOccurred(){
-        if(self.isCalibrating){
-            //send a labeled example
-            if(self.calibrationStage != .notCalibrating && self.isWaitingForMotionData)
-            {
-                self.isWaitingForMotionData = false
-                
-                // send data to the server with label
-                sendFeatures(self.ringBuffer.getDataAsVector(),
-                             withLabel: self.calibrationStage)
-                
-                self.nextCalibrationStage()
-            }
-        }
-        else
-        {
-            if(self.isWaitingForMotionData)
-            {
-                self.isWaitingForMotionData = false
-                //predict a label
-                getPrediction(self.ringBuffer.getDataAsVector())
-                // dont predict again for a bit
-                setDelayedWaitingToTrue(2.0)
-                
-            }
-        }
-    }
+//    func largeMotionEventOccurred(){
+//        if(self.isCalibrating){
+//            //send a labeled example
+//            if(self.calibrationStage != .notCalibrating && self.isWaitingForMotionData)
+//            {
+//                self.isWaitingForMotionData = false
+//
+//                // send data to the server with label
+//                sendFeatures(self.ringBuffer.getDataAsVector(),
+//                             withLabel: self.calibrationStage)
+//
+//                self.nextCalibrationStage()
+//            }
+//        }
+//        else
+//        {
+//            if(self.isWaitingForMotionData)
+//            {
+//                self.isWaitingForMotionData = false
+//                //predict a label
+//                getPrediction(self.ringBuffer.getDataAsVector())
+//                // dont predict again for a bit
+//                setDelayedWaitingToTrue(2.0)
+//
+//            }
+//        }
+//    }
     
     func nextCalibrationStage(){
         switch self.calibrationStage {
         case .notCalibrating:
             //start with up arrow
-            self.calibrationStage = .up
+            self.calibrationStage = .ambient
             setDelayedWaitingToTrue(1.0)
             break
-        case .up:
+        case .ambient:
             //go to right arrow
-            self.calibrationStage = .right
+            self.calibrationStage = .whisper
             setDelayedWaitingToTrue(1.0)
             break
-        case .right:
+        case .whisper:
             //go to down arrow
-            self.calibrationStage = .down
+            self.calibrationStage = .talk
             setDelayedWaitingToTrue(1.0)
             break
-        case .down:
+        case .talk:
             //go to left arrow
-            self.calibrationStage = .left
+            self.calibrationStage = .yell
             setDelayedWaitingToTrue(1.0)
             break
             
-        case .left:
+        case .yell:
             //end calibration
             self.calibrationStage = .notCalibrating
             setDelayedWaitingToTrue(1.0)
@@ -244,6 +254,9 @@ class ViewController: UIViewController, URLSessionDelegate {
         label.layer.add(animation, forKey:nil)
         label.backgroundColor = UIColor.white
     }
+    func changeLabel(_ text:String){
+        soundLabel.text = text
+    }
     
     // MARK: View Controller Life Cycle
     override func viewDidLoad() {
@@ -251,15 +264,13 @@ class ViewController: UIViewController, URLSessionDelegate {
         // Do any additional setup after loading the view, typically from a nib.
         
         audio.startMicrophoneProcessing(withFps: 10)
-        
+        soundLabel.text = "default"
         // create reusable animation
         animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
         animation.type = CATransitionType.fade
         animation.duration = 0.5
-        
-        
         // setup core motion handlers
-        startMotionUpdates()
+//        startMotionUpdates()
         
         dsid = 1 // set this and it will update UI
     }
@@ -377,16 +388,16 @@ class ViewController: UIViewController, URLSessionDelegate {
     func displayLabelResponse(_ response:String){
         switch response {
         case "['up']":
-            blinkLabel(upArrow)
+//            blinkLabel(upArrow)
             break
         case "['down']":
-            blinkLabel(downArrow)
+//            blinkLabel(downArrow)
             break
         case "['left']":
-            blinkLabel(leftArrow)
+//            blinkLabel(leftArrow)
             break
         case "['right']":
-            blinkLabel(rightArrow)
+//            blinkLabel(rightArrow)
             break
         default:
             print("Unknown")
