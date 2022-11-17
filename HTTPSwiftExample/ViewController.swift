@@ -77,7 +77,8 @@ class ViewController: UIViewController, URLSessionDelegate {
                 self.isCalibrating = true
                 DispatchQueue.main.async{
                     self.changeLabel("Be Quiet")
-                    self.getAudio()
+                    self.getAudio(text:"ambient")
+//                    self.setAsCalibrating(self.whisper)
 //                    self.setAsCalibrating(self.upArrow)
 //                    self.setAsNormal(self.rightArrow)
 //                    self.setAsNormal(self.leftArrow)
@@ -88,6 +89,8 @@ class ViewController: UIViewController, URLSessionDelegate {
                 self.isCalibrating = true
                 DispatchQueue.main.async{
                     self.changeLabel("Whisper")
+                    self.getAudio(text:"whisper")
+//                    self.setAsCalibrating(self.talk)
 //                    self.setAsNormal(self.upArrow)
 //                    self.setAsNormal(self.rightArrow)
 //                    self.setAsCalibrating(self.leftArrow)
@@ -98,6 +101,8 @@ class ViewController: UIViewController, URLSessionDelegate {
                 self.isCalibrating = true
                 DispatchQueue.main.async{
                     self.changeLabel("Talk Normally")
+                    self.getAudio(text:"talk")
+//                    self.setAsCalibrating(self.yell)
 //                    self.setAsNormal(self.upArrow)
 //                    self.setAsNormal(self.rightArrow)
 //                    self.setAsNormal(self.leftArrow)
@@ -109,6 +114,8 @@ class ViewController: UIViewController, URLSessionDelegate {
                 self.isCalibrating = true
                 DispatchQueue.main.async{
                     self.changeLabel("Yell")
+                    self.getAudio(text:"yell")
+//                    self.setAsCalibrating(self.notCalibrating)
 //                    self.setAsNormal(self.upArrow)
 //                    self.setAsCalibrating(self.rightArrow)
 //                    self.setAsNormal(self.leftArrow)
@@ -118,6 +125,7 @@ class ViewController: UIViewController, URLSessionDelegate {
             case .notCalibrating:
                 self.isCalibrating = false
                 DispatchQueue.main.async{
+                    self.changeLabel("Listening")
 //                    self.setAsNormal(self.upArrow)
 //                    self.setAsNormal(self.rightArrow)
 //                    self.setAsNormal(self.leftArrow)
@@ -174,9 +182,19 @@ class ViewController: UIViewController, URLSessionDelegate {
 //        }
 //    }
     @objc
-    func getAudio(){
+    func getAudio(text:String){
 //        print(self.audio.fftData)
-        print("in getAudio")
+        var sounds = self.audio.fftData
+        for _ in 0...20{
+            sounds += self.audio.fftData
+            setDelayedWaitingToTrue(10000)
+        }
+        
+//        for i in 0...sounds.count{
+//            sounds[i] = Double(sounds[i])
+//        }
+        sendFeatures(sounds, withLabel: self.calibrationStage)
+        self.nextCalibrationStage()
     }
     
     //MARK: Calibration procedure
@@ -264,6 +282,7 @@ class ViewController: UIViewController, URLSessionDelegate {
         // Do any additional setup after loading the view, typically from a nib.
         
         audio.startMicrophoneProcessing(withFps: 10)
+        audio.play()
         soundLabel.text = "default"
         // create reusable animation
         animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
@@ -310,7 +329,7 @@ class ViewController: UIViewController, URLSessionDelegate {
     }
     
     //MARK: Comm with Server
-    func sendFeatures(_ array:[Double], withLabel label:CalibrationStage){
+    func sendFeatures(_ array:[Float], withLabel label:CalibrationStage){
         let baseURL = "\(SERVER_URL)/AddDataPoint"
         let postUrl = URL(string: "\(baseURL)")
         
@@ -338,8 +357,8 @@ class ViewController: UIViewController, URLSessionDelegate {
                 else{
                     let jsonDictionary = self.convertDataToDictionary(with: data)
                     
-                    print(jsonDictionary["feature"]!)
-                    print(jsonDictionary["label"]!)
+//                    print(jsonDictionary["feature"]!)
+//                    print(jsonDictionary["label"]!)
                 }
 
         })

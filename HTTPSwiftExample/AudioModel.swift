@@ -36,7 +36,8 @@ class AudioModel {
     // public function for starting processing of microphone data
     func startMicrophoneProcessing(withFps:Double){
         self.audioManager?.inputBlock = self.handleMicrophone
-        
+//        print("start:")
+//        print(fftData)
         // repeat this fps times per second using the timer class
         Timer.scheduledTimer(timeInterval: 1.0/withFps, target: self,
                             selector: #selector(self.runEveryInterval),
@@ -77,55 +78,55 @@ class AudioModel {
     
     // FOR MODULE B
     // This function gets the averages for the left and right of a specific index via an input of a Hz value
-    func getGesture(setHertz: Float) -> (Float, Float){
-        let index = (setHertz/Float(self.audioManager!.samplingRate)) * Float(BUFFER_SIZE) //Get the index of the FFT from the Hz
-        
-        let range = 10 // Determines the range of values to determine the baseline averages
-        
-        // Min and Max are the lowerst and largest values we compare in this range
-        let min = Int(index) - range < 0 ? 0 : Int(index) - range
-        let max = Int(index) + range >= BUFFER_SIZE ? BUFFER_SIZE-1 : Int(index) + range
-        
-        // Store the new values in this new "buffer"
-        let zoomedBuffer = fftData[min...max]
-        
-        // Creates a sum for the left hand side of the specific Hz
-        var leftAvg:Float = 0.0
-        for val in min..<Int(index){
-            leftAvg += zoomedBuffer[val]
-        }
-        
-        // Creates a sum for the right hand side of the specific Hz
-        var rightAvg:Float = 0.0
-        for val in Int(index)+1..<max{
-            rightAvg += zoomedBuffer[val]
-        }
-        
-        // Create the averages for the left and right side and returns those values
-        leftAvg = leftAvg/Float(range-min)
-        rightAvg = rightAvg/(Float(zoomedBuffer.count-range-min))
-        return (leftAvg, rightAvg)
-    }
+//    func getGesture(setHertz: Float) -> (Float, Float){
+//        let index = (setHertz/Float(self.audioManager!.samplingRate)) * Float(BUFFER_SIZE) //Get the index of the FFT from the Hz
+//
+//        let range = 10 // Determines the range of values to determine the baseline averages
+//
+//        // Min and Max are the lowerst and largest values we compare in this range
+//        let min = Int(index) - range < 0 ? 0 : Int(index) - range
+//        let max = Int(index) + range >= BUFFER_SIZE ? BUFFER_SIZE-1 : Int(index) + range
+//
+//        // Store the new values in this new "buffer"
+//        let zoomedBuffer = fftData[min...max]
+//
+//        // Creates a sum for the left hand side of the specific Hz
+//        var leftAvg:Float = 0.0
+//        for val in min..<Int(index){
+//            leftAvg += zoomedBuffer[val]
+//        }
+//
+//        // Creates a sum for the right hand side of the specific Hz
+//        var rightAvg:Float = 0.0
+//        for val in Int(index)+1..<max{
+//            rightAvg += zoomedBuffer[val]
+//        }
+//
+//        // Create the averages for the left and right side and returns those values
+//        leftAvg = leftAvg/Float(range-min)
+//        rightAvg = rightAvg/(Float(zoomedBuffer.count-range-min))
+//        return (leftAvg, rightAvg)
+//    }
     
     // Here is an example function for getting the maximum frequency
-    func getMaxFrequencyMagnitude(toIgnore: Int) -> (Int, Float){
-        // this is the slow way of getting the maximum...
-        // you might look into the Accelerate framework to make things more efficient
-        var max:Float = -1000.0
-        var maxi:Int = 0
-        if inputBuffer != nil {
-            for i in 0..<Int(fftData.count){
-                if(i != toIgnore) {
-                    if(fftData[i]>max){
-                        max = fftData[i]
-                        maxi = i
-                    }
-                }
-            }
-        }
-        let frequency = Float(maxi) / Float(BUFFER_SIZE) * Float(self.audioManager!.samplingRate)
-        return (maxi, frequency)
-    }
+//    func getMaxFrequencyMagnitude(toIgnore: Int) -> (Int, Float){
+//        // this is the slow way of getting the maximum...
+//        // you might look into the Accelerate framework to make things more efficient
+//        var max:Float = -1000.0
+//        var maxi:Int = 0
+//        if inputBuffer != nil {
+//            for i in 0..<Int(fftData.count){
+//                if(i != toIgnore) {
+//                    if(fftData[i]>max){
+//                        max = fftData[i]
+//                        maxi = i
+//                    }
+//                }
+//            }
+//        }
+//        let frequency = Float(maxi) / Float(BUFFER_SIZE) * Float(self.audioManager!.samplingRate)
+//        return (maxi, frequency)
+//    }
 //    func getMaxInWindow(){
 //
 ////        let size = fftData.count - 50 + 1
@@ -240,7 +241,7 @@ class AudioModel {
             
             fftHelper!.performForwardFFT(withData: &timeData, andCopydBMagnitudeToBuffer: &fftData)
         }
-        print(fftData)
+//        print(fftData)
     }
     
    
