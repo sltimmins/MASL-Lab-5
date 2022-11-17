@@ -16,12 +16,16 @@
 // to see what your public facing IP address is, the ip address can be used here
 
 // CHANGE THIS TO THE URL FOR YOUR LAPTOP
-let SERVER_URL = "http://10.8.125.185:8000" // change this for your server name!!!
+let SERVER_URL = "http://192.168.1.252:8000/" // change this for your server name!!!
 
 import UIKit
 import CoreMotion
 
+let AUDIO_BUFFER_SIZE = 1024 * 4;
+
 class ViewController: UIViewController, URLSessionDelegate {
+    
+    let audio = AudioModel(buffer_size: AUDIO_BUFFER_SIZE)
     
     // MARK: Class Properties
     lazy var session: URLSession = {
