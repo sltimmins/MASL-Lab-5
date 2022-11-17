@@ -250,6 +250,7 @@ class ViewController: UIViewController, URLSessionDelegate {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        audio.startMicrophoneProcessing(withFps: 10)
         
         // create reusable animation
         animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
