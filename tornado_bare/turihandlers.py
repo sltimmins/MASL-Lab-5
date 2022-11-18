@@ -56,13 +56,12 @@ class RequestNewDatasetId(BaseHandler):
         self.write_json({"dsid":newSessionId})
 
 class UpdateModelForDatasetId(BaseHandler):
-    def get(self):
+    async def get(self):
         '''Train a new model (or update) for given dataset ID
         '''
-        dsid = self.get_int_arg("dsid",default=0)
+        dsid = self.get_int_arg("dsid",default=1)
 
-        data = self.get_features_and_labels_as_SFrame(dsid)
-
+        data = await self.get_features_and_labels_as_SFrame(dsid)
         # fit the model to the data
         acc = -1
         best_model = 'unknown'
