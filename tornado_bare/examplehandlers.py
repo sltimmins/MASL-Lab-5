@@ -16,7 +16,7 @@ from datetime import datetime
 
 
 class MSLC(BaseHandler):
-    def get(self):
+    async def get(self):
         self.write('''
             <!DOCTYPE html>
             <html>
@@ -33,7 +33,7 @@ class MSLC(BaseHandler):
             ''')
         # now we can display the queries
         # as HTML
-        for f in self.db.queries.find():
+        async for f in self.db.queries.find():
             f['time'] = datetime.fromtimestamp(f['time']).strftime('%c')
             self.write('<p style="color:blue">'+str(f)+'</p>')
             #if f['arg'] not in ['sleep','death']:
@@ -79,7 +79,7 @@ class JSONPostHandler(BaseHandler):
 
 
 class LogToDatabaseHandler(BaseHandler):
-    def get(self):
+    async def get(self):
         '''log query to database
         '''
         #pdb.set_trace() # to stop here and inspect
@@ -87,7 +87,7 @@ class LogToDatabaseHandler(BaseHandler):
         vals = self.get_argument("arg")
         t = time.time()
         ip = self.request.remote_ip
-        dbid = self.db.queries.insert(
+        dbid = await self.db.queries.insert(
             {"arg":vals,"time":t,"remote_ip":ip}
             )
         self.write_json({"id":str(dbid)})

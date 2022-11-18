@@ -25,7 +25,7 @@ class PrintHandlers(BaseHandler):
         self.write(self.application.handlers_string.replace('),','),\n'))
 
 class UploadLabeledDatapointHandler(BaseHandler):
-    def post(self):
+    async def post(self):
         '''Save data point and class label to database
         '''
         data = json.loads(self.request.body.decode("utf-8"))
@@ -35,7 +35,7 @@ class UploadLabeledDatapointHandler(BaseHandler):
         label = data['label']
         sess  = data['dsid']
 
-        dbid = self.db.labeledinstances.insert_one(
+        dbid = await self.db.labeledinstances.insert_one(
             {"feature":fvals,"label":label,"dsid":sess}
             );
         self.write_json({"id":str(dbid),
@@ -45,10 +45,10 @@ class UploadLabeledDatapointHandler(BaseHandler):
             "label":label})
 
 class RequestNewDatasetId(BaseHandler):
-    def get(self):
+    async def get(self):
         '''Get a new dataset ID for building a new dataset
         '''
-        a = self.db.labeledinstances.find_one(sort=[("dsid", -1)])
+        a = await self.db.labeledinstances.find_one(sort=[("dsid", -1)])
         if a == None:
             newSessionId = 1
         else:
@@ -68,23 +68,33 @@ class UpdateModelForDatasetId(BaseHandler):
         best_model = 'unknown'
         if len(data)>0:
             
+            boosted_model = tc.classifier.boosted_trees_classifier.create(data, target='target', verbose=0)
+            randomForest_model = tc.classifier.random_forest_classifier.create(data, target='target', verbose=0)
+            boosted_yhat = boosted_model.predict(data)
+            randomForest_yhat = randomForest_model.predict(data)
             model = tc.classifier.create(data,target='target',verbose=0)# training
-            yhat = model.predict(data)
-            self.clf = model
-            acc = sum(yhat==data['target'])/float(len(data))
+            # yhat = model.predict(data)
+            self.clf1 = randomForest_model
+            self.clf2 = boosted_model
+            # acc = sum(yhat==data['target'])/float(len(data))
+            acc1 = sum(boosted_yhat==data['target'])/float(len(data))
+            acc2 = sum(randomForest_yhat==data['target'])/float(len(data))
             # save model for use later, if desired
-            model.save('../models/turi_model_dsid%d'%(dsid))
+            # model.save('../models/turi_model_dsid%d'%(dsid))
+            boosted_model.save('../models/turi_boosted_model_dsid%d'%(dsid))
+            randomForest_model.save('../models/turi_randomForest_model_dsid%d'%(dsid))
             
-
+        print(acc1, acc2)
         # send back the resubstitution accuracy
         # if training takes a while, we are blocking tornado!! No!!
-        self.write_json({"resubAccuracy":acc})
+        # self.write_json({"resubAccuracy":acc})
+        self.write_json({"boosted_resubAccuracy":acc1, "randomForest_resubAccuracy":acc2})
 
-    def get_features_and_labels_as_SFrame(self, dsid):
+    async def get_features_and_labels_as_SFrame(self, dsid):
         # create feature vectors from database
         features=[]
         labels=[]
-        for a in self.db.labeledinstances.find({"dsid":dsid}): 
+        async for a in self.db.labeledinstances.find({"dsid":dsid}): 
             features.append([float(val) for val in a['feature']])
             labels.append(a['label'])
 
@@ -101,15 +111,20 @@ class PredictOneFromDatasetId(BaseHandler):
         data = json.loads(self.request.body.decode("utf-8"))    
         fvals = self.get_features_as_SFrame(data['feature'])
         dsid  = data['dsid']
+        model = data['model']
 
         # load the model from the database (using pickle)
         # we are blocking tornado!! no!!
-        if(self.clf == []):
+        if(self.clf2 == [] or self.clf1 == []):
             print('Loading Model From file')
-            self.clf = tc.load_model('../models/turi_model_dsid%d'%(dsid))
+            self.clf1 = tc.load_model('../models/turi_boosted_model_dsid%d'%(dsid))
+            self.clf2 = tc.load_model('../models/turi_randomForest_model_dsid%d'%(dsid))
   
-
-        predLabel = self.clf.predict(fvals);
+        if (model == 'randomForest'):
+            predLabel = self.clf2.predict(fvals)
+        elif (model == 'boosted'):
+            predLabel = self.clf1.predict(fvals)
+        # predLabel = self.clf2.predict(fvals)
         self.write_json({"prediction":str(predLabel)})
 
     def get_features_as_SFrame(self, vals):

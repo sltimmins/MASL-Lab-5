@@ -9,7 +9,7 @@
 # database imports
 from pymongo import MongoClient
 from pymongo.errors import ServerSelectionTimeoutError
-
+import motor.motor_tornado
 import os
 # tornado imports
 import tornado.web
@@ -55,7 +55,7 @@ class Application(tornado.web.Application):
 
         try:
             db_host = os.getenv('DB_HOST')
-            self.client  = MongoClient(host=db_host, serverSelectionTimeoutMS=50) # local host, default port
+            self.client  = motor.motor_tornado.MotorClient(host=db_host, serverSelectionTimeoutMS=50) # local host, default port
             print(self.client.server_info()) # force pymongo to look for possible running servers, error if none running
             # if we get here, at least one instance of pymongo is running
             self.db = self.client.turidatabase # database with labeledinstances, models
@@ -67,8 +67,11 @@ class Application(tornado.web.Application):
             print('   something like $./mongod --dbpath "/data/db"')
             #raise inst
         
-        self.clf = [] # the classifier model (in-class assignment, you might need to change this line!)
+        self.clf1 = [] #random forest classifier
+        self.clf2 = [] # boosted classifer ------- the classifier model (in-class assignment, you might need to change this line!)
         # but depending on your implementation, you may not need to change it  ¯\_(ツ)_/¯
+        self.acc1 = 0.0
+        self.acc2 = 0.0
 
         print('=================================')
         print('==========HANDLER INFO===========')
