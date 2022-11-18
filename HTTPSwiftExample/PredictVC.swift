@@ -28,7 +28,7 @@ class PredictVC: UIViewController, URLSessionDelegate {
     // Data Members
     let audio = AudioModel(buffer_size: PREDICT_AUDIO_BUFFER_SIZE)
     var currModel = "Random Forest";
-    var dsid = 0;
+    var dsid = 1;
     let operationQueue = OperationQueue()
     
     // OUTLETS

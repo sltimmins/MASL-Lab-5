@@ -322,8 +322,7 @@ class ViewController: UIViewController, URLSessionDelegate {
     }
     
     @IBAction func makeModel(_ sender: AnyObject) {
-        
-        // create a GET request for server to update the ML model with current data
+                // create a GET request for server to update the ML model with current data
         let baseURL = "\(SERVER_URL)/UpdateModel"
         let query = "?dsid=\(self.dsid)"
         
