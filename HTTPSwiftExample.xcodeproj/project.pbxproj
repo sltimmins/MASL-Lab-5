@@ -12,6 +12,7 @@
 		A06DA36E2925D850002070E4 /* CircularBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = A06DA3672925D850002070E4 /* CircularBuffer.m */; };
 		A06DA36F2925D850002070E4 /* AudioFileReader.m in Sources */ = {isa = PBXBuildFile; fileRef = A06DA36B2925D850002070E4 /* AudioFileReader.m */; };
 		A06DA3702925D850002070E4 /* Novocaine.m in Sources */ = {isa = PBXBuildFile; fileRef = A06DA36C2925D850002070E4 /* Novocaine.m */; };
+		A0D647E12927197A00BD3056 /* CalibrateVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D647E02927197A00BD3056 /* CalibrateVC.swift */; };
 		B67483DB1ACA2D6800A9970E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67483DA1ACA2D6800A9970E /* AppDelegate.swift */; };
 		B67483DD1ACA2D6800A9970E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67483DC1ACA2D6800A9970E /* ViewController.swift */; };
 		B67483E01ACA2D6800A9970E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B67483DE1ACA2D6800A9970E /* Main.storyboard */; };
@@ -31,6 +32,7 @@
 		A06DA36A2925D850002070E4 /* FFTHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTHelper.h; sourceTree = "<group>"; };
 		A06DA36B2925D850002070E4 /* AudioFileReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioFileReader.m; sourceTree = "<group>"; };
 		A06DA36C2925D850002070E4 /* Novocaine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Novocaine.m; sourceTree = "<group>"; };
+		A0D647E02927197A00BD3056 /* CalibrateVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrateVC.swift; sourceTree = "<group>"; };
 		B67483D51ACA2D6800A9970E /* HTTPSwiftExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HTTPSwiftExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B67483D91ACA2D6800A9970E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B67483DA1ACA2D6800A9970E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 				B67483E11ACA2D6800A9970E /* Images.xcassets */,
 				B67483D81ACA2D6800A9970E /* Supporting Files */,
 				A06DA3622925D51F002070E4 /* AudioModel.swift */,
+				A0D647E02927197A00BD3056 /* CalibrateVC.swift */,
 			);
 			path = HTTPSwiftExample;
 			sourceTree = "<group>";
@@ -181,6 +184,7 @@
 				A06DA3632925D51F002070E4 /* AudioModel.swift in Sources */,
 				A06DA36D2925D850002070E4 /* FFTHelper.m in Sources */,
 				B694B01A1FA377E4009A4277 /* RingBuffer.swift in Sources */,
+				A0D647E12927197A00BD3056 /* CalibrateVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
