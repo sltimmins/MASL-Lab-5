@@ -344,9 +344,17 @@ class ViewController: UIViewController, URLSessionDelegate {
                     let jsonDictionary = self.convertDataToDictionary(with: data)
                     
                     if let resubAcc = jsonDictionary["boosted_resubAccuracy"]{
+                        let percentage = resubAcc as! Int * 100
+                        DispatchQueue.main.async {
+                            self.boostedTreeAccLabel.text = "Boosted Tree Accuracy: " + (percentage as AnyObject).stringValue + "%"
+                        }
                         print("Boosted tree resubstitution Accuracy is", resubAcc)
                     }
                     if let resubAcc = jsonDictionary["randomForest_resubAccuracy"]{
+                        let percentage = resubAcc as! Int * 100
+                        DispatchQueue.main.async {
+                            self.randomForestAccLabel.text = "Random Forest Accuracy: " + (percentage as AnyObject).stringValue + "%"
+                        }
                         print("Random forest resubstitution Accuracy is", resubAcc)
                     }
                 }

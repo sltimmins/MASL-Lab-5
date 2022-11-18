@@ -27,7 +27,7 @@ class PredictVC: UIViewController, URLSessionDelegate {
     
     // Data Members
     let audio = AudioModel(buffer_size: PREDICT_AUDIO_BUFFER_SIZE)
-    var currModel = "Random Forest";
+    var currModel = "randomForest";
     var dsid = 1;
     let operationQueue = OperationQueue()
     
@@ -55,6 +55,7 @@ class PredictVC: UIViewController, URLSessionDelegate {
             case 1:
                 self.currModel = "boosted"
             default:
+                self.currModel = "randomForest"
                 break
             }
         print(currModel)
@@ -67,6 +68,7 @@ class PredictVC: UIViewController, URLSessionDelegate {
             self.audio.fftData.removeLast()
             
             self.getPrediction(self.audio.fftData)
+            self.audio.fftData.append(0.0)
             self.predictionButton.isEnabled = true
         })
     }
@@ -76,6 +78,7 @@ class PredictVC: UIViewController, URLSessionDelegate {
         
         // create a custom HTTP POST request
         var request = URLRequest(url: postUrl!)
+        print(array.count)
         
         // data to send in body of post request (send arguments as json)
                                                                         
@@ -111,17 +114,25 @@ class PredictVC: UIViewController, URLSessionDelegate {
     func displayLabelResponse(_ response:String){
         switch response {
         case "['whisper']":
-            print("whispering")
+            DispatchQueue.main.async {
+                self.predictionLabel.text = "WHISPERING"
+            }
             break
         case "['talk']":
             print("talking")
-//            blinkLabel(downArrow)
+            DispatchQueue.main.async {
+                self.predictionLabel.text = "TALKING"
+            }
             break
         case "['yell']":
-//            blinkLabel(leftArrow)
+            DispatchQueue.main.async {
+                self.predictionLabel.text = "YELLING"
+            }
             break
         case "['ambient']":
-//            blinkLabel(rightArrow)
+            DispatchQueue.main.async {
+                self.predictionLabel.text = "AMBIENT"
+            }
             break
         default:
             print("Unknown")
@@ -130,38 +141,7 @@ class PredictVC: UIViewController, URLSessionDelegate {
     }
     
     //MARK: Comm with Server
-    func sendFeatures(_ array:[Float], withLabel label:String){
-        let baseURL = "\(SERVER_URL)/AddDataPoint"
-        let postUrl = URL(string: "\(baseURL)")
-        
-        // create a custom HTTP POST request
-        var request = URLRequest(url: postUrl!)
-        
-        // data to send in body of post request (send arguments as json)
-        let jsonUpload:NSDictionary = ["feature":array,
-                                       "label":"\(label)",
-                                       "dsid":self.dsid]
-        
-        
-        let requestBody:Data? = self.convertDictionaryToData(with:jsonUpload)
-        
-        request.httpMethod = "POST"
-        request.httpBody = requestBody
-        
-        let postTask : URLSessionDataTask = self.session.dataTask(with: request,
-            completionHandler:{(data, response, error) in
-                if(error != nil){
-                    if let res = response{
-                        print("Response:\n",res)
-                    }
-                }
-                else{
-                    let jsonDictionary = self.convertDataToDictionary(with: data)
-                    
-                }
-        })
-        postTask.resume() // start the task
-    }
+
     
     //MARK: JSON Conversion Functions
     func convertDictionaryToData(with jsonUpload:NSDictionary) -> Data?{
