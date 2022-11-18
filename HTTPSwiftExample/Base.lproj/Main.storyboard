@@ -81,8 +81,15 @@
                                     <action selector="makeModel:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="8rn-ZV-hYa"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Current Accuracy" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LJI-Yc-qx4">
-                                <rect key="frame" x="120" y="135" width="134" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Random Forest Accuracy: " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LJI-Yc-qx4">
+                                <rect key="frame" x="26" y="133" width="200" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Boosted Tree Accuracy:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wkJ-2T-Rcj">
+                                <rect key="frame" x="26" y="162" width="182" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
@@ -109,7 +116,9 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="Item" id="V31-1m-PZT"/>
                     <connections>
+                        <outlet property="boostedTreeAccLabel" destination="wkJ-2T-Rcj" id="IRr-bh-41x"/>
                         <outlet property="dsidLabel" destination="yA7-nd-seT" id="pMu-dh-28l"/>
+                        <outlet property="randomForestAccLabel" destination="LJI-Yc-qx4" id="rya-cl-SWC"/>
                         <outlet property="soundLabel" destination="Ld6-6n-wtH" id="1u7-ps-wqg"/>
                         <outlet property="startButton" destination="Q83-th-e1u" id="ouF-x4-u0h"/>
                     </connections>
@@ -121,7 +130,7 @@
         <!--Item-->
         <scene sceneID="BRV-f3-bnS">
             <objects>
-                <viewController id="b5r-yr-GVF" customClass="CalibrateVC" customModule="HTTPSwiftExample" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="b5r-yr-GVF" customClass="PredictVC" customModule="HTTPSwiftExample" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ZUr-Ms-dkG"/>
                         <viewControllerLayoutGuide type="bottom" id="Mwn-tP-bay"/>
@@ -129,13 +138,54 @@
                     <view key="view" contentMode="scaleToFill" id="DSF-Sa-ANo">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="qEN-bD-ESh">
+                                <rect key="frame" x="61" y="111" width="253" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="Random Forest"/>
+                                    <segment title="Boosted Tree"/>
+                                </segments>
+                                <connections>
+                                    <action selector="selectModel:" destination="b5r-yr-GVF" eventType="valueChanged" id="Xhp-7h-e8j"/>
+                                </connections>
+                            </segmentedControl>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Select a Model:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V20-X9-fKe">
+                                <rect key="frame" x="128" y="75" width="118" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DxN-yc-XA1">
+                                <rect key="frame" x="116" y="560" width="143" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Start Predicting"/>
+                                <connections>
+                                    <action selector="startPredicting:" destination="b5r-yr-GVF" eventType="touchUpInside" id="wDA-Zg-JH2"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="PREDICTION" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KgK-MN-cpV">
+                                <rect key="frame" x="111" y="317" width="153" height="33"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="27"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Item" id="33a-Ua-bSg"/>
+                    <connections>
+                        <outlet property="chooseModelCtrl" destination="qEN-bD-ESh" id="E9L-7G-Ll0"/>
+                        <outlet property="modelLabel" destination="V20-X9-fKe" id="Yqt-FA-qYq"/>
+                        <outlet property="predictionButton" destination="DxN-yc-XA1" id="Ccn-Nx-Xhe"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Os3-Am-Xww" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1007" y="609"/>
+            <point key="canvasLocation" x="-1007.2" y="608.54572713643188"/>
         </scene>
     </scenes>
     <resources>

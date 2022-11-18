@@ -32,6 +32,7 @@ let AUDIO_BUFFER_SIZE = 1024 * 4 * 15;
 
 class ViewController: UIViewController, URLSessionDelegate {
     
+    // Create an audio model
     let audio = AudioModel(buffer_size: AUDIO_BUFFER_SIZE)
     
     // MARK: Class Properties
@@ -60,11 +61,18 @@ class ViewController: UIViewController, URLSessionDelegate {
     
     var isWaitingForMotionData = false
 //
+    // Outlets
     @IBOutlet weak var dsidLabel: UILabel!
-    @IBOutlet weak var largeMotionMagnitude: UIProgressView!
     @IBOutlet weak var soundLabel: UILabel!
     @IBOutlet weak var startButton: UIButton!
+    
+    @IBOutlet weak var randomForestAccLabel: UILabel!
+    @IBOutlet weak var boostedTreeAccLabel: UILabel!
+    
+    // Timer for Audio
     private var timer:Timer = Timer()
+    
+    
     // MARK: Class Properties with Observers
     enum CalibrationStage {
         case notCalibrating
@@ -85,26 +93,23 @@ class ViewController: UIViewController, URLSessionDelegate {
             }
         }
     }
-    
-    @IBAction func magnitudeChanged(_ sender: UISlider) {
-        self.magValue = Double(sender.value)
-    }
 
-    @objc
-    func getAudio(text:String){
-        var sounds = self.audio.fftData
-        for _ in 0...50{
-            sounds += self.audio.fftData
-        }
-        
-        sendFeatures(sounds, withLabel: self.calibrationStage)
-    }
+//    @objc
+//    func getAudio(text:String){
+//        var sounds = self.audio.fftData
+//        for _ in 0...50{
+//            sounds += self.audio.fftData
+//        }
+//        sendFeatures(sounds, withLabel: self.calibrationStage)
+//    }
     
     func setDelayedWaitingToTrue(_ time:Double){
         self.startButton.isEnabled = false
         
         DispatchQueue.main.asyncAfter(deadline: .now() + time, execute: {
-            print(self.audio.fftData)
+            // Removes an -inf
+            self.audio.fftData.removeLast()
+            
             self.sendFeatures(self.audio.fftData, withLabel: self.calibrationStage)
             self.startButton.isEnabled = true
             if(self.calibrationStage == .yell){
@@ -292,7 +297,6 @@ class ViewController: UIViewController, URLSessionDelegate {
     func displayLabelResponse(_ response:String){
         switch response {
         case "['up']":
-//            blinkLabel(upArrow)
             break
         case "['down']":
 //            blinkLabel(downArrow)
