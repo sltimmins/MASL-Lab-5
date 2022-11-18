@@ -21,8 +21,6 @@ let SERVER_URL = "http://192.168.1.252:8000/" // change this for your server nam
 
 /*
  TODO: Show Accuracy after Update Models
- TODO: Predict Tab - Switch between Boosted and Random Forest
- TODO: Predict - Get 3 seconds and send it
  */
 
 import UIKit
