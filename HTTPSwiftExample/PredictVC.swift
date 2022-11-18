@@ -35,13 +35,13 @@ class PredictVC: UIViewController, URLSessionDelegate {
     @IBOutlet weak var chooseModelCtrl: UISegmentedControl!
     @IBOutlet weak var modelLabel: UILabel!
     @IBOutlet weak var predictionButton: UIButton!
+    @IBOutlet weak var predictionLabel: UILabel!
     
     override func viewDidLoad() {
         self.title = "Predict"
     }
     
     // FOR PREDICTION
-
     @IBAction func startPredicting(_ sender: Any) {
         setDelayedWaitingToTrue(3.0)
         self.predictionButton.setTitle("Listening...", for: .normal)

@@ -158,10 +158,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DxN-yc-XA1">
-                                <rect key="frame" x="116" y="560" width="143" height="35"/>
+                                <rect key="frame" x="139" y="560" width="98" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Start Predicting"/>
+                                <buttonConfiguration key="configuration" style="plain" title="PREDICT!"/>
                                 <connections>
                                     <action selector="startPredicting:" destination="b5r-yr-GVF" eventType="touchUpInside" id="wDA-Zg-JH2"/>
                                 </connections>
@@ -181,6 +181,7 @@
                         <outlet property="chooseModelCtrl" destination="qEN-bD-ESh" id="E9L-7G-Ll0"/>
                         <outlet property="modelLabel" destination="V20-X9-fKe" id="Yqt-FA-qYq"/>
                         <outlet property="predictionButton" destination="DxN-yc-XA1" id="Ccn-Nx-Xhe"/>
+                        <outlet property="predictionLabel" destination="KgK-MN-cpV" id="c41-HV-fxJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Os3-Am-Xww" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
