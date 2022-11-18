@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES" initialViewController="ch5-Lw-F7Y">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES" initialViewController="ch5-Lw-F7Y">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -147,6 +147,7 @@
                                     <segment title="Boosted Tree"/>
                                 </segments>
                                 <connections>
+                                    <action selector="modelChoice:" destination="lBK-Kp-X0f" eventType="valueChanged" id="PN4-sX-XAu"/>
                                     <action selector="selectModel:" destination="b5r-yr-GVF" eventType="valueChanged" id="Xhp-7h-e8j"/>
                                 </connections>
                             </segmentedControl>
@@ -163,6 +164,8 @@
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="PREDICT!"/>
                                 <connections>
+                                    <action selector="predict:" destination="lBK-Kp-X0f" eventType="touchUpInside" id="bj9-xn-kMI"/>
+                                    <action selector="predictButton:" destination="lBK-Kp-X0f" eventType="touchUpInside" id="vYz-Ba-MUI"/>
                                     <action selector="startPredicting:" destination="b5r-yr-GVF" eventType="touchUpInside" id="wDA-Zg-JH2"/>
                                 </connections>
                             </button>
@@ -185,6 +188,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Os3-Am-Xww" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="lBK-Kp-X0f" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="-1007.2" y="608.54572713643188"/>
         </scene>

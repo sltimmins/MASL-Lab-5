@@ -35,6 +35,8 @@ class UploadLabeledDatapointHandler(BaseHandler):
         label = data['label']
         sess  = data['dsid']
 
+        print(len(fvals))
+
         dbid = await self.db.labeledinstances.insert_one(
             {"feature":fvals,"label":label,"dsid":sess}
             );
@@ -59,7 +61,7 @@ class UpdateModelForDatasetId(BaseHandler):
     async def get(self):
         '''Train a new model (or update) for given dataset ID
         '''
-        dsid = self.get_int_arg("dsid",default=1)
+        dsid = self.get_int_arg("dsid",default=0)
 
         data = await self.get_features_and_labels_as_SFrame(dsid)
         # fit the model to the data
@@ -114,7 +116,7 @@ class PredictOneFromDatasetId(BaseHandler):
 
         # load the model from the database (using pickle)
         # we are blocking tornado!! no!!
-        if(self.clf2 == [] or self.clf1 == []):
+        if( self.clf1 == []):
             print('Loading Model From file')
             self.clf1 = tc.load_model('../models/turi_boosted_model_dsid%d'%(dsid))
             self.clf2 = tc.load_model('../models/turi_randomForest_model_dsid%d'%(dsid))

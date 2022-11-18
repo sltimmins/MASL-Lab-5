@@ -67,14 +67,24 @@ class BaseHandler(tornado.web.RequestHandler):
         return self.application.client
 
     @property
-    def clf(self):
+    def clf1(self):
         '''Instance getter for current classifier
         '''
-        return self.application.clf
+        return self.application.clf1
 
-    @clf.setter
-    def clf(self, value):
-        self.application.clf = value
+    @clf1.setter
+    def clf1(self, value):
+        self.application.clf1 = value
+    
+    @property
+    def clf2(self):
+        '''Instance getter for current classifier
+        '''
+        return self.application.clf2
+
+    @clf2.setter
+    def clf2(self, value):
+        self.application.clf2 = value
 
     def get_int_arg(self, value, default=[], strip=True):
         '''Convenience method for grabbing integer arguments

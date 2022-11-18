@@ -51,9 +51,9 @@ class PredictVC: UIViewController, URLSessionDelegate {
         switch chooseModelCtrl.selectedSegmentIndex
             {
             case 0:
-                self.currModel = "Random Forest"
+                self.currModel = "randomForest"
             case 1:
-                self.currModel = "Boosted Tree"
+                self.currModel = "boosted"
             default:
                 break
             }
@@ -66,9 +66,67 @@ class PredictVC: UIViewController, URLSessionDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + time, execute: {
             self.audio.fftData.removeLast()
             
-            self.sendFeatures(self.audio.fftData, withLabel: self.currModel)
+            self.getPrediction(self.audio.fftData)
             self.predictionButton.isEnabled = true
         })
+    }
+    func getPrediction(_ array:[Float]){
+        let baseURL = "\(SERVER_URL)/PredictOne"
+        let postUrl = URL(string: "\(baseURL)")
+        
+        // create a custom HTTP POST request
+        var request = URLRequest(url: postUrl!)
+        
+        // data to send in body of post request (send arguments as json)
+                                                                        
+        let jsonUpload:NSDictionary = ["feature":array, "dsid":self.dsid, "model":self.currModel]
+        
+        
+        let requestBody:Data? = self.convertDictionaryToData(with:jsonUpload)
+        
+        request.httpMethod = "POST"
+        request.httpBody = requestBody
+        
+        let postTask : URLSessionDataTask = self.session.dataTask(with: request,
+                                                                  completionHandler:{
+                        (data, response, error) in
+                        if(error != nil){
+                            if let res = response{
+                                print("Response:\n",res)
+                            }
+                        }
+                        else{ // no error we are aware of
+                            let jsonDictionary = self.convertDataToDictionary(with: data)
+                            
+                            let labelResponse = jsonDictionary["prediction"]!
+                            print(labelResponse)
+                            self.displayLabelResponse(labelResponse as! String)
+
+                        }
+                                                                    
+        })
+        
+        postTask.resume() // start the task
+    }
+    func displayLabelResponse(_ response:String){
+        switch response {
+        case "['whisper']":
+            print("whispering")
+            break
+        case "['talk']":
+            print("talking")
+//            blinkLabel(downArrow)
+            break
+        case "['yell']":
+//            blinkLabel(leftArrow)
+            break
+        case "['ambient']":
+//            blinkLabel(rightArrow)
+            break
+        default:
+            print("Unknown")
+            break
+        }
     }
     
     //MARK: Comm with Server

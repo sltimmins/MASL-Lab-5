@@ -16,7 +16,7 @@
 // to see what your public facing IP address is, the ip address can be used here
 
 // CHANGE THIS TO THE URL FOR YOUR LAPTOP
-let SERVER_URL = "http://192.168.83.214:8000/" // change this for your server name!!!
+let SERVER_URL = "http://172.20.10.14:8000" // change this for your server name!!!
 
 
 /*
@@ -37,8 +37,8 @@ class ViewController: UIViewController, URLSessionDelegate {
     lazy var session: URLSession = {
         let sessionConfig = URLSessionConfiguration.ephemeral
         
-        sessionConfig.timeoutIntervalForRequest = 5.0
-        sessionConfig.timeoutIntervalForResource = 8.0
+        sessionConfig.timeoutIntervalForRequest = 20.0
+        sessionConfig.timeoutIntervalForResource = 20.0
         sessionConfig.httpMaximumConnectionsPerHost = 1
         
         return URLSession(configuration: sessionConfig,
@@ -109,6 +109,9 @@ class ViewController: UIViewController, URLSessionDelegate {
             self.audio.fftData.removeLast()
             
             self.sendFeatures(self.audio.fftData, withLabel: self.calibrationStage)
+            //add data to end of buffer
+            self.audio.fftData.append(0.0)
+            
             self.startButton.isEnabled = true
             if(self.calibrationStage == .yell){
                 self.soundLabel.text = "Listening"
@@ -228,7 +231,7 @@ class ViewController: UIViewController, URLSessionDelegate {
                                        "label":"\(label)",
                                        "dsid":self.dsid]
         
-        
+        print(array.count)
         let requestBody:Data? = self.convertDictionaryToData(with:jsonUpload)
         
         request.httpMethod = "POST"
@@ -252,6 +255,7 @@ class ViewController: UIViewController, URLSessionDelegate {
         
         postTask.resume() // start the task
     }
+    
     
     func getPrediction(_ array:[Double]){
         let baseURL = "\(SERVER_URL)/PredictOne"
@@ -339,8 +343,11 @@ class ViewController: UIViewController, URLSessionDelegate {
                 else{
                     let jsonDictionary = self.convertDataToDictionary(with: data)
                     
-                    if let resubAcc = jsonDictionary["resubAccuracy"]{
-                        print("Resubstitution Accuracy is", resubAcc)
+                    if let resubAcc = jsonDictionary["boosted_resubAccuracy"]{
+                        print("Boosted tree resubstitution Accuracy is", resubAcc)
+                    }
+                    if let resubAcc = jsonDictionary["randomForest_resubAccuracy"]{
+                        print("Random forest resubstitution Accuracy is", resubAcc)
                     }
                 }
                                                                     
