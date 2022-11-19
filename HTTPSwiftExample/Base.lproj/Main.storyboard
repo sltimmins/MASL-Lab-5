@@ -59,16 +59,6 @@
                                     <action selector="startCalibration:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="nsx-sf-n99"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hnx-72-uCy">
-                                <rect key="frame" x="125" y="54" width="124" height="36"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                <state key="normal" title="Update Model">
-                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                </state>
-                                <connections>
-                                    <action selector="makeModel:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="8rn-ZV-hYa"/>
-                                </connections>
-                            </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Random Forest Accuracy: " lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LJI-Yc-qx4">
                                 <rect key="frame" x="14" y="98" width="345" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -81,6 +71,16 @@
                                 <color key="textColor" systemColor="systemBlueColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hnx-72-uCy">
+                                <rect key="frame" x="85" y="54" width="203" height="36"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="Click to Update Model">
+                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="makeModel:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="8rn-ZV-hYa"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -90,7 +90,6 @@
                             <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="Q83-th-e1u" secondAttribute="bottom" constant="70" id="E2t-O4-iZ2"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Q83-th-e1u" secondAttribute="trailing" constant="26" id="JU4-FJ-2Pu"/>
                             <constraint firstItem="Q83-th-e1u" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="25" id="K39-MK-U7v"/>
-                            <constraint firstItem="hnx-72-uCy" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="109" id="LhU-YG-DbJ"/>
                             <constraint firstItem="wkJ-2T-Rcj" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" id="OgW-2m-LQm"/>
                             <constraint firstItem="wkJ-2T-Rcj" firstAttribute="top" secondItem="LJI-Yc-qx4" secondAttribute="bottom" constant="8" symbolic="YES" id="VVd-rk-kRU"/>
                             <constraint firstItem="Ld6-6n-wtH" firstAttribute="top" secondItem="wkJ-2T-Rcj" secondAttribute="bottom" constant="166" id="Wft-84-sr9"/>
@@ -98,8 +97,9 @@
                             <constraint firstItem="hnx-72-uCy" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="54" id="fCp-Ij-HMU"/>
                             <constraint firstItem="Q83-th-e1u" firstAttribute="top" secondItem="Ld6-6n-wtH" secondAttribute="bottom" constant="147" id="fki-zF-NLt"/>
                             <constraint firstItem="Ld6-6n-wtH" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="21" id="gyc-Rr-YYg"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="hnx-72-uCy" secondAttribute="trailing" constant="110" id="o6B-tE-wOF"/>
                             <constraint firstAttribute="trailing" secondItem="LJI-Yc-qx4" secondAttribute="trailing" constant="16" id="qvP-qb-qU6"/>
+                            <constraint firstItem="hnx-72-uCy" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="69" id="tHc-ma-14k"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="hnx-72-uCy" secondAttribute="trailing" constant="71" id="yDh-nX-9CD"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Item" id="V31-1m-PZT"/>

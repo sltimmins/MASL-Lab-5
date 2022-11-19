@@ -162,7 +162,7 @@ class ViewController: UIViewController, URLSessionDelegate {
             soundLabel.text = "Yell"
 
             setDelayedWaitingToTrue(3.0)
-            self.startButton.setTitle("Begin Ambient", for: .normal)
+            self.startButton.setTitle("Begin Ambient!", for: .normal)
         }
         else if(calibrationStage == .yell){
             calibrationStage = .notCalibrating
