@@ -16,7 +16,7 @@
 // to see what your public facing IP address is, the ip address can be used here
 
 // CHANGE THIS TO THE URL FOR YOUR LAPTOP
-let SERVER_URL = "http://172.20.10.14:8000" // change this for your server name!!!
+let SERVER_URL = "http://192.168.1.252:8000" // change this for your server name!!!
 
 
 /*
@@ -60,7 +60,6 @@ class ViewController: UIViewController, URLSessionDelegate {
     var isWaitingForMotionData = false
 //
     // Outlets
-    @IBOutlet weak var dsidLabel: UILabel!
     @IBOutlet weak var soundLabel: UILabel!
     @IBOutlet weak var startButton: UIButton!
     
@@ -82,24 +81,7 @@ class ViewController: UIViewController, URLSessionDelegate {
     
     var calibrationStage:CalibrationStage = .notCalibrating
     
-    var dsid:Int = 0 {
-        didSet{
-            DispatchQueue.main.async{
-                // update label when set
-                self.dsidLabel.layer.add(self.animation, forKey: nil)
-                self.dsidLabel.text = "Current DSID: \(self.dsid)"
-            }
-        }
-    }
-
-//    @objc
-//    func getAudio(text:String){
-//        var sounds = self.audio.fftData
-//        for _ in 0...50{
-//            sounds += self.audio.fftData
-//        }
-//        sendFeatures(sounds, withLabel: self.calibrationStage)
-//    }
+    var dsid = 1
     
     func setDelayedWaitingToTrue(_ time:Double){
         self.startButton.isEnabled = false
@@ -109,6 +91,7 @@ class ViewController: UIViewController, URLSessionDelegate {
             self.audio.fftData.removeLast()
             
             self.sendFeatures(self.audio.fftData, withLabel: self.calibrationStage)
+            
             //add data to end of buffer
             self.audio.fftData.append(0.0)
             
@@ -146,73 +129,44 @@ class ViewController: UIViewController, URLSessionDelegate {
         animation.type = CATransitionType.fade
         animation.duration = 0.5
         calibrationStage = .notCalibrating
-        // setup core motion handlers
         
         dsid = 1 // set this and it will update UI
-    }
-
-    //MARK: Get New Dataset ID
-    @IBAction func getDataSetId(_ sender: AnyObject) {
-        // create a GET request for a new DSID from server
-        let baseURL = "\(SERVER_URL)/GetNewDatasetId"
-        
-        let getUrl = URL(string: baseURL)
-        let request: URLRequest = URLRequest(url: getUrl!)
-        let dataTask : URLSessionDataTask = self.session.dataTask(with: request,
-            completionHandler:{(data, response, error) in
-                if(error != nil){
-                    print("Response:\n%@",response!)
-                }
-                else{
-                    let jsonDictionary = self.convertDataToDictionary(with: data)
-                    
-                    // This better be an integer
-                    if let dsid = jsonDictionary["dsid"]{
-                        self.dsid = dsid as! Int
-                    }
-                }
-                
-        })
-        
-        dataTask.resume() // start the task
-        
     }
     
     //MARK: Calibration
     @IBAction func startCalibration(_ sender: AnyObject) {
-//        self.isWaitingForMotionData = false // dont do anything yet
-//        nextCalibrationStage()
+
         if(calibrationStage == .notCalibrating){
             calibrationStage = .ambient
             soundLabel.text = "Be Quiet"
-//            audio.play()
+
             setDelayedWaitingToTrue(3.0)
             self.startButton.setTitle("Begin Whispering", for: .normal)
         }
         else if(calibrationStage == .ambient){
             calibrationStage = .whisper
             soundLabel.text = "Whisper"
-//            audio.play()
+
             setDelayedWaitingToTrue(3.0)
             self.startButton.setTitle("Begin Talking", for: .normal)
         }
         else if(calibrationStage == .whisper){
             calibrationStage = .talk
             soundLabel.text = "Talk"
-//            audio.play()
+
             setDelayedWaitingToTrue(3.0)
             self.startButton.setTitle("Begin Yelling", for: .normal)
         }
         else if(calibrationStage == .talk){
             calibrationStage = .yell
             soundLabel.text = "Yell"
-//            audio.play()
+
             setDelayedWaitingToTrue(3.0)
             self.startButton.setTitle("Begin Ambient", for: .normal)
         }
         else if(calibrationStage == .yell){
             calibrationStage = .notCalibrating
-            soundLabel.text = "Listening"
+            soundLabel.text = "Calibrate!"
             
         }
         
@@ -247,8 +201,6 @@ class ViewController: UIViewController, URLSessionDelegate {
                 else{
                     let jsonDictionary = self.convertDataToDictionary(with: data)
                     
-//                    print(jsonDictionary["feature"]!)
-//                    print(jsonDictionary["label"]!)
                 }
 
         })
@@ -301,13 +253,10 @@ class ViewController: UIViewController, URLSessionDelegate {
         case "['up']":
             break
         case "['down']":
-//            blinkLabel(downArrow)
             break
         case "['left']":
-//            blinkLabel(leftArrow)
             break
         case "['right']":
-//            blinkLabel(rightArrow)
             break
         default:
             print("Unknown")
@@ -342,13 +291,22 @@ class ViewController: UIViewController, URLSessionDelegate {
                 }
                 else{
                     let jsonDictionary = self.convertDataToDictionary(with: data)
-                    
-                    if let resubAcc = jsonDictionary["boosted_resubAccuracy"]{
+
+                    if let resubAcc = jsonDictionary["boosted_resubAccuracy"] as? NSNumber{
+                        let boostAcc = String(describing: resubAcc)
+                        DispatchQueue.main.async {
+                            self.boostedTreeAccLabel.text = "Boosted Tree Accuracy: " + boostAcc
+                        }
                         print("Boosted tree resubstitution Accuracy is", resubAcc)
                     }
-                    if let resubAcc = jsonDictionary["randomForest_resubAccuracy"]{
+                    if let resubAcc = jsonDictionary["randomForest_resubAccuracy"] as? NSNumber{
+                        let forestAcc = String(describing: resubAcc)
+                        DispatchQueue.main.async {
+                            self.randomForestAccLabel.text = "Random Forest Accuracy: " + forestAcc
+                        }
                         print("Random forest resubstitution Accuracy is", resubAcc)
                     }
+
                 }
                                                                     
         })

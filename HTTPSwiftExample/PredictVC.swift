@@ -27,9 +27,10 @@ class PredictVC: UIViewController, URLSessionDelegate {
     
     // Data Members
     let audio = AudioModel(buffer_size: PREDICT_AUDIO_BUFFER_SIZE)
-    var currModel = "Random Forest";
+    var currModel = "randomForest";
     var dsid = 1;
     let operationQueue = OperationQueue()
+    var labelVal = "Let's Predict!"
     
     // OUTLETS
     @IBOutlet weak var chooseModelCtrl: UISegmentedControl!
@@ -45,6 +46,7 @@ class PredictVC: UIViewController, URLSessionDelegate {
     @IBAction func startPredicting(_ sender: Any) {
         setDelayedWaitingToTrue(3.0)
         self.predictionButton.setTitle("Listening...", for: .normal)
+        self.predictionLabel.text = self.labelVal
     }
     
     @IBAction func selectModel(_ sender: Any) {
@@ -67,9 +69,12 @@ class PredictVC: UIViewController, URLSessionDelegate {
             self.audio.fftData.removeLast()
             
             self.getPrediction(self.audio.fftData)
+            self.audio.fftData.append(0.0)
             self.predictionButton.isEnabled = true
         })
+        
     }
+    
     func getPrediction(_ array:[Float]){
         let baseURL = "\(SERVER_URL)/PredictOne"
         let postUrl = URL(string: "\(baseURL)")
@@ -86,7 +91,6 @@ class PredictVC: UIViewController, URLSessionDelegate {
         
         request.httpMethod = "POST"
         request.httpBody = requestBody
-        
         let postTask : URLSessionDataTask = self.session.dataTask(with: request,
                                                                   completionHandler:{
                         (data, response, error) in
@@ -97,36 +101,36 @@ class PredictVC: UIViewController, URLSessionDelegate {
                         }
                         else{ // no error we are aware of
                             let jsonDictionary = self.convertDataToDictionary(with: data)
-                            
                             let labelResponse = jsonDictionary["prediction"]!
-                            print(labelResponse)
-                            self.displayLabelResponse(labelResponse as! String)
-
+                            self.labelVal = self.displayLabelResponse(labelResponse as! String)
+                            DispatchQueue.main.async {
+                                self.predictionLabel.text = self.labelVal
+                            }
                         }
-                                                                    
         })
-        
         postTask.resume() // start the task
+        self.predictionButton.setTitle("PREDICT!", for: .normal)
     }
-    func displayLabelResponse(_ response:String){
+    
+    func displayLabelResponse(_ response:String) -> String{
         switch response {
         case "['whisper']":
             print("whispering")
-            break
+            return "Whispering"
         case "['talk']":
             print("talking")
-//            blinkLabel(downArrow)
-            break
+            return "Talking"
         case "['yell']":
-//            blinkLabel(leftArrow)
-            break
+            print("yelling")
+            return "Yelling"
         case "['ambient']":
-//            blinkLabel(rightArrow)
-            break
+            print("ambient")
+            return "Ambient"
         default:
             print("Unknown")
             break
         }
+        return "WHAT"
     }
     
     //MARK: Comm with Server
