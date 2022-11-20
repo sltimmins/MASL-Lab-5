@@ -90,9 +90,10 @@ class ViewController: UIViewController, URLSessionDelegate {
             // Removes an -inf
             self.audio.fftData.removeLast()
             
+            // upload data to server
             self.sendFeatures(self.audio.fftData, withLabel: self.calibrationStage)
             
-            //add data to end of buffer
+            //add data to end of buffer to correct size
             self.audio.fftData.append(0.0)
             
             self.startButton.isEnabled = true
@@ -117,6 +118,7 @@ class ViewController: UIViewController, URLSessionDelegate {
     
     // MARK: View Controller Life Cycle
     override func viewDidLoad() {
+        // initial UI setup
         self.title = "Calibrate";
         self.startButton.setTitle("Begin Ambient", for: .normal)
         super.viewDidLoad()
@@ -139,28 +141,28 @@ class ViewController: UIViewController, URLSessionDelegate {
         if(calibrationStage == .notCalibrating){
             calibrationStage = .ambient
             soundLabel.text = "Be Quiet"
-
+            //listen for 3 seconds to record ambient sound
             setDelayedWaitingToTrue(3.0)
             self.startButton.setTitle("Begin Whispering", for: .normal)
         }
         else if(calibrationStage == .ambient){
             calibrationStage = .whisper
             soundLabel.text = "Whisper"
-
+            //listen for 3 seconds to record whisper sound
             setDelayedWaitingToTrue(3.0)
             self.startButton.setTitle("Begin Talking", for: .normal)
         }
         else if(calibrationStage == .whisper){
             calibrationStage = .talk
             soundLabel.text = "Talk"
-
+            //listen for 3 seconds to record talking sound
             setDelayedWaitingToTrue(3.0)
             self.startButton.setTitle("Begin Yelling", for: .normal)
         }
         else if(calibrationStage == .talk){
             calibrationStage = .yell
             soundLabel.text = "Yell"
-
+            //listen for 3 seconds to record yelling sound
             setDelayedWaitingToTrue(3.0)
             self.startButton.setTitle("Begin Ambient!", for: .normal)
         }

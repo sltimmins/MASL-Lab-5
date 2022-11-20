@@ -68,7 +68,7 @@ class UpdateModelForDatasetId(BaseHandler):
         acc = -1
         best_model = 'unknown'
         if len(data)>0:
-            
+            # update both models
             boosted_model = tc.classifier.boosted_trees_classifier.create(data, target='target', verbose=0)
             randomForest_model = tc.classifier.random_forest_classifier.create(data, target='target', verbose=0)
             boosted_yhat = boosted_model.predict(data)
@@ -116,11 +116,12 @@ class PredictOneFromDatasetId(BaseHandler):
 
         # load the model from the database (using pickle)
         # we are blocking tornado!! no!!
-        if( self.clf1 == []):
+        if( self.clf1 == [] or self.clf2 == []):
             print('Loading Model From file')
             self.clf1 = tc.load_model('../models/turi_boosted_model_dsid%d'%(dsid))
             self.clf2 = tc.load_model('../models/turi_randomForest_model_dsid%d'%(dsid))
   
+        # predict on selected model
         if (model == 'randomForest'):
             predLabel = self.clf2.predict(fvals)
         elif (model == 'boosted'):

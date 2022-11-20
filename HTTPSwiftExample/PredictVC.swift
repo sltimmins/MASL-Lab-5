@@ -42,13 +42,14 @@ class PredictVC: UIViewController, URLSessionDelegate {
         self.title = "Predict"
     }
     
-    // FOR PREDICTION
+    // FOR PREDICTION take 3 seconds of data
     @IBAction func startPredicting(_ sender: Any) {
         setDelayedWaitingToTrue(3.0)
         self.predictionButton.setTitle("Listening...", for: .normal)
         self.predictionLabel.text = self.labelVal
     }
     
+    // change which model to use for prediction
     @IBAction func selectModel(_ sender: Any) {
         switch chooseModelCtrl.selectedSegmentIndex
             {
@@ -65,11 +66,12 @@ class PredictVC: UIViewController, URLSessionDelegate {
     func setDelayedWaitingToTrue(_ time:Double){
         self.predictionButton.isEnabled = false
         
+        //send data for prediction
         DispatchQueue.main.asyncAfter(deadline: .now() + time, execute: {
-            self.audio.fftData.removeLast()
+            self.audio.fftData.removeLast() // remove -inf
             
             self.getPrediction(self.audio.fftData)
-            self.audio.fftData.append(0.0)
+            self.audio.fftData.append(0.0) // reset to correct size
             self.predictionButton.isEnabled = true
         })
         
@@ -112,6 +114,7 @@ class PredictVC: UIViewController, URLSessionDelegate {
         self.predictionButton.setTitle("PREDICT!", for: .normal)
     }
     
+    // display prediction
     func displayLabelResponse(_ response:String) -> String{
         switch response {
         case "['whisper']":

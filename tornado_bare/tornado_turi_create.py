@@ -70,7 +70,7 @@ class Application(tornado.web.Application):
         self.clf1 = [] #random forest classifier
         self.clf2 = [] # boosted classifer ------- the classifier model (in-class assignment, you might need to change this line!)
         # but depending on your implementation, you may not need to change it  ¯\_(ツ)_/¯
-        self.acc1 = 0.0
+        self.acc1 = 0.0 # accuracies for each model
         self.acc2 = 0.0
 
         print('=================================')
